@@ -32,3 +32,4 @@ flake8
 ## Screenshots:
 
 ## Database structure:
+![Database Structure](images/db_structure.jpg)
