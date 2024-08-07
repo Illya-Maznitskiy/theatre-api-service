@@ -13,14 +13,14 @@ from theatre.views import (
 
 
 router = routers.DefaultRouter()
-router.register('theatre', TheatreHallViewSet)
-router.register('play', PlayViewSet)
-router.register('performance', PerformanceViewSet)
-router.register('actor', ActorViewSet)
-router.register('genre', GenreViewSet)
-router.register('reservation', ReservationViewSet)
-router.register('ticket', TicketViewSet)
+router.register("theatre", TheatreHallViewSet)
+router.register("play", PlayViewSet)
+router.register("performance", PerformanceViewSet)
+router.register("actor", ActorViewSet)
+router.register("genre", GenreViewSet)
+router.register("reservation", ReservationViewSet)
+router.register("ticket", TicketViewSet)
 
-urlpatterns = [path('', include(router.urls))]
+urlpatterns = [path("", include(router.urls))]
 
-app_name = 'theatre'
+app_name = "theatre"

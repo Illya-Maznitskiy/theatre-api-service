@@ -8,14 +8,14 @@ from theatre.models import (
     Actor,
     Genre,
     Reservation,
-    Ticket
+    Ticket,
 )
 
 
 class TheatreHallSerializer(serializers.ModelSerializer):
     class Meta:
         model = TheatreHall
-        fields = ('id', 'name', "rows", "seats_in_row")
+        fields = ("id", "name", "rows", "seats_in_row")
 
 
 class PlaySerializer(serializers.ModelSerializer):
@@ -45,7 +45,7 @@ class GenreSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ("id", "username", "email")
 
 
 class ReservationSerializer(serializers.ModelSerializer):
