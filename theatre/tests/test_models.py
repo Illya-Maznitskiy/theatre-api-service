@@ -20,14 +20,12 @@ class TestTheatreModels(TestCase):
             description="A tragedy by Shakespeare",
         )
         self.theatre_hall = TheatreHall.objects.create(
-            name="Main Hall",
-            rows=10,
-            seats_in_row=20
+            name="Main Hall", rows=10, seats_in_row=20
         )
         self.show_time = timezone.now() + timezone.timedelta(days=1)
         self.user = User.objects.create_user(
-            username='testuser',
-            password='password',
+            username="testuser",
+            password="password",
         )
 
     def test_create_theatre_hall(self):
@@ -49,7 +47,7 @@ class TestTheatreModels(TestCase):
         performance = Performance.objects.create(
             play=self.play,
             theatre_hall=self.theatre_hall,
-            show_time=self.show_time
+            show_time=self.show_time,
         )
         self.assertEqual(performance.play, self.play)
         self.assertEqual(performance.theatre_hall, self.theatre_hall)
@@ -57,7 +55,7 @@ class TestTheatreModels(TestCase):
         self.assertEqual(
             str(performance),
             f"Hamlet at Main Hall on "
-            f"{self.show_time.strftime('%Y-%m-%d %H:%M')}"
+            f"{self.show_time.strftime('%Y-%m-%d %H:%M')}",
         )
 
     def test_create_actor(self):
@@ -86,14 +84,14 @@ class TestTheatreModels(TestCase):
             str(reservation),
             f"Reservation: {reservation.id} on "
             f"{reservation.created_at.strftime('%Y-%m-%d %H:%M')} "
-            f"by {self.user.username}"
+            f"by {self.user.username}",
         )
 
     def test_create_ticket(self):
         performance = Performance.objects.create(
             play=self.play,
             theatre_hall=self.theatre_hall,
-            show_time=self.show_time
+            show_time=self.show_time,
         )
         reservation = Reservation.objects.create(
             user=self.user,
@@ -111,5 +109,5 @@ class TestTheatreModels(TestCase):
         self.assertEqual(
             str(ticket),
             f"Ticket 5-10 for Hamlet on "
-            f"{self.show_time.strftime('%Y-%m-%d %H:%M')}"
+            f"{self.show_time.strftime('%Y-%m-%d %H:%M')}",
         )
