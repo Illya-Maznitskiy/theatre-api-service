@@ -55,6 +55,12 @@ class ReservationSerializer(serializers.ModelSerializer):
         model = Reservation
         fields = ("id", "created_at", "user")
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["created_at"] = instance.created_at.strftime(
+            "%Y-%m-%dT%H:%M:%S") + "Z"
+        return representation
+
 
 class TicketSerializer(serializers.ModelSerializer):
     performance = PerformanceSerializer()
