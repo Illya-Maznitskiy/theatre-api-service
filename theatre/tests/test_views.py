@@ -141,7 +141,7 @@ class PrivatePerformanceTest(TestCase):
         self.performance = Performance.objects.create(
             play=self.play,
             theatre_hall=self.theatre_hall,
-            show_time="2024-08-20 19:00:00"
+            show_time=timezone.now()
         )
 
         self.performance_list_url = reverse("theatre:performance-list")
@@ -314,15 +314,11 @@ class PrivateReservationTest(TestCase):
 
     def test_create_reservation(self):
         data = {
-            "user": {
-                "username": self.user.username,
-                "email": self.user.email,
-            }
+            "user": self.user.id
         }
         response = self.client.post(
             self.reservation_list_url, json.dumps(data), content_type="application/json"
         )
-        print(response.content)  # Print response content to debug
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_update_reservation_detail(self):
@@ -330,9 +326,79 @@ class PrivateReservationTest(TestCase):
         response = self.client.put(
             self.reservation_detail_url, json.dumps(data), content_type="application/json"
         )
-        print(response.content)  # Print response content to debug
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_reservation_detail(self):
         response = self.client.delete(self.reservation_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class PublicTicketTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_authentication_required(self):
+        response = self.client.get(reverse("theatre:ticket-list"))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class PrivateTicketTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username="user", password="password"
+        )
+        self.client.force_login(self.user)
+
+        self.theatre_hall = TheatreHall.objects.create(
+            name="Main Hall", rows=10, seats_in_row=15
+        )
+        self.play = Play.objects.create(
+            title="Hamlet", description="A tragedy by William Shakespeare"
+        )
+        self.performance = Performance.objects.create(
+            play=self.play,
+            theatre_hall=self.theatre_hall,
+            show_time=timezone.now()
+        )
+        self.reservation = Reservation.objects.create(user=self.user)
+        self.ticket_list_url = reverse("theatre:ticket-list")
+        self.ticket_detail_url = reverse("theatre:ticket-detail", kwargs={"pk": 1})
+        self.ticket = Ticket.objects.create(
+            row=1,
+            seat=1,
+            performance=self.performance,
+            reservation=self.reservation
+        )
+
+    def test_retrieve_ticket_detail(self):
+        response = self.client.get(self.ticket_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_ticket(self):
+        data = {
+            "row": 2,
+            "seat": 2,
+            "performance": self.performance.id,
+            "reservation": self.reservation.id
+        }
+        response = self.client.post(
+            self.ticket_list_url, json.dumps(data), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_update_ticket_detail(self):
+        data = {
+            "row": 3,
+            "seat": 3,
+            "performance": self.performance.id,
+            "reservation": self.reservation.id
+        }
+        response = self.client.put(
+            self.ticket_detail_url, json.dumps(data), content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_ticket_detail(self):
+        response = self.client.delete(self.ticket_detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

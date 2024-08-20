@@ -49,7 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = Reservation
@@ -63,8 +63,12 @@ class ReservationSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    performance = PerformanceSerializer()
-    reservation = ReservationSerializer()
+    performance = serializers.PrimaryKeyRelatedField(
+        queryset=Performance.objects.all()
+    )
+    reservation = serializers.PrimaryKeyRelatedField(
+        queryset=Reservation.objects.all()
+    )
 
     class Meta:
         model = Ticket

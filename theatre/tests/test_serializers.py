@@ -118,12 +118,8 @@ class TestSerializer(BaseSerializerTestCase):
             "created_at": self.reservation.created_at.strftime(
                 "%Y-%m-%dT%H:%M:%S"
             )
-            + "Z",
-            "user": {
-                "id": self.user.id,
-                "username": "testuser",
-                "email": "user@example.com",
-            },
+                          + "Z",
+            "user": self.user.id,
         }
         self.assert_serialized_equal(
             ReservationSerializer, self.reservation, expected_data
@@ -134,24 +130,8 @@ class TestSerializer(BaseSerializerTestCase):
             "id": self.ticket.id,
             "row": 5,
             "seat": 10,
-            "performance": {
-                "id": self.performance.id,
-                "play": self.play.id,
-                "theatre_hall": self.theatre_hall.id,
-                "show_time": "2024-08-12T00:00:00Z",
-            },
-            "reservation": {
-                "id": self.reservation.id,
-                "created_at": self.reservation.created_at.strftime(
-                    "%Y-%m-%dT%H:%M:%S"
-                )
-                + "Z",
-                "user": {
-                    "id": self.user.id,
-                    "username": "testuser",
-                    "email": "user@example.com",
-                },
-            },
+            "performance": self.performance.id,
+            "reservation": self.reservation.id,
         }
         self.assert_serialized_equal(
             TicketSerializer, self.ticket, expected_data
