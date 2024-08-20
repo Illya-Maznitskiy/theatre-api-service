@@ -13,7 +13,7 @@ from theatre.views import (
 
 
 router = routers.DefaultRouter()
-router.register("theatre", TheatreHallViewSet)
+router.register("theatre", TheatreHallViewSet, basename="theatre_hall")
 router.register("play", PlayViewSet)
 router.register("performance", PerformanceViewSet)
 router.register("actor", ActorViewSet)

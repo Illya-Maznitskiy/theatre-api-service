@@ -94,7 +94,7 @@ class PrivatePlayTest(TestCase):
     def test_create_play(self):
         data = {
             "title": "Othello",
-            "description": "A tragedy by William Shakespeare"
+            "description": "A tragedy by William Shakespeare",
         }
         response = self.client.post(
             self.play_list_url, data, content_type="application/json"
@@ -103,7 +103,8 @@ class PrivatePlayTest(TestCase):
 
     def test_update_play_detail(self):
         data = {
-            "title": "Updated Hamlet", "description": "Updated description"
+            "title": "Updated Hamlet",
+            "description": "Updated description",
         }
         response = self.client.put(
             self.play_detail_url, data, content_type="application/json"
@@ -141,13 +142,12 @@ class PrivatePerformanceTest(TestCase):
         self.performance = Performance.objects.create(
             play=self.play,
             theatre_hall=self.theatre_hall,
-            show_time=timezone.now()
+            show_time=timezone.now(),
         )
 
         self.performance_list_url = reverse("theatre:performance-list")
         self.performance_detail_url = reverse(
-            "theatre:performance-detail",
-            kwargs={"pk": self.performance.pk}
+            "theatre:performance-detail", kwargs={"pk": self.performance.pk}
         )
 
     def test_retrieve_performance_detail(self):
@@ -158,7 +158,7 @@ class PrivatePerformanceTest(TestCase):
         data = {
             "play": self.play.id,
             "theatre_hall": self.theatre_hall.id,
-            "show_time": "2024-08-21 19:00:00"
+            "show_time": "2024-08-21 19:00:00",
         }
         response = self.client.post(
             self.performance_list_url, data, content_type="application/json"
@@ -169,7 +169,7 @@ class PrivatePerformanceTest(TestCase):
         data = {
             "play": self.play.id,
             "theatre_hall": self.theatre_hall.id,
-            "show_time": "2024-08-21 20:00:00"
+            "show_time": "2024-08-21 20:00:00",
         }
         response = self.client.put(
             self.performance_detail_url, data, content_type="application/json"
@@ -202,9 +202,7 @@ class PrivateActorTest(TestCase):
         self.actor_detail_url = reverse(
             "theatre:actor-detail", kwargs={"pk": 1}
         )
-        self.actor = Actor.objects.create(
-            first_name="John", last_name="Doe"
-        )
+        self.actor = Actor.objects.create(first_name="John", last_name="Doe")
 
     def test_retrieve_actor_list(self):
         response = self.client.get(self.actor_list_url)
@@ -246,10 +244,10 @@ class PrivateGenreTest(TestCase):
         )
         self.client.force_login(self.user)
         self.genre_list_url = reverse("theatre:genre-list")
-        self.genre_detail_url = reverse("theatre:genre-detail", kwargs={"pk": 1})
-        self.genre = Genre.objects.create(
-            name="Drama"
+        self.genre_detail_url = reverse(
+            "theatre:genre-detail", kwargs={"pk": 1}
         )
+        self.genre = Genre.objects.create(name="Drama")
 
     def test_retrieve_genre_list(self):
         response = self.client.get(self.genre_list_url)
@@ -287,7 +285,9 @@ class PrivateReservationTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(
-            username="uniqueuser", email="some_user@example.com", password="testpass"
+            username="uniqueuser",
+            email="some_user@example.com",
+            password="testpass",
         )
         self.client.force_login(self.user)
 
@@ -300,7 +300,7 @@ class PrivateReservationTest(TestCase):
         self.performance = Performance.objects.create(
             play=self.play,
             theatre_hall=self.theatre_hall,
-            show_time=timezone.now()
+            show_time=timezone.now(),
         )
         self.reservation_list_url = reverse("theatre:reservation-list")
         self.reservation_detail_url = reverse(
@@ -313,18 +313,20 @@ class PrivateReservationTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_reservation(self):
-        data = {
-            "user": self.user.id
-        }
+        data = {"user": self.user.id}
         response = self.client.post(
-            self.reservation_list_url, json.dumps(data), content_type="application/json"
+            self.reservation_list_url,
+            json.dumps(data),
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_update_reservation_detail(self):
         data = {"user": self.user.id}
         response = self.client.put(
-            self.reservation_detail_url, json.dumps(data), content_type="application/json"
+            self.reservation_detail_url,
+            json.dumps(data),
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -359,16 +361,18 @@ class PrivateTicketTest(TestCase):
         self.performance = Performance.objects.create(
             play=self.play,
             theatre_hall=self.theatre_hall,
-            show_time=timezone.now()
+            show_time=timezone.now(),
         )
         self.reservation = Reservation.objects.create(user=self.user)
         self.ticket_list_url = reverse("theatre:ticket-list")
-        self.ticket_detail_url = reverse("theatre:ticket-detail", kwargs={"pk": 1})
+        self.ticket_detail_url = reverse(
+            "theatre:ticket-detail", kwargs={"pk": 1}
+        )
         self.ticket = Ticket.objects.create(
             row=1,
             seat=1,
             performance=self.performance,
-            reservation=self.reservation
+            reservation=self.reservation,
         )
 
     def test_retrieve_ticket_detail(self):
@@ -380,10 +384,12 @@ class PrivateTicketTest(TestCase):
             "row": 2,
             "seat": 2,
             "performance": self.performance.id,
-            "reservation": self.reservation.id
+            "reservation": self.reservation.id,
         }
         response = self.client.post(
-            self.ticket_list_url, json.dumps(data), content_type="application/json"
+            self.ticket_list_url,
+            json.dumps(data),
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -392,10 +398,12 @@ class PrivateTicketTest(TestCase):
             "row": 3,
             "seat": 3,
             "performance": self.performance.id,
-            "reservation": self.reservation.id
+            "reservation": self.reservation.id,
         }
         response = self.client.put(
-            self.ticket_detail_url, json.dumps(data), content_type="application/json"
+            self.ticket_detail_url,
+            json.dumps(data),
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

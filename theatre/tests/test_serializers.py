@@ -118,7 +118,7 @@ class TestSerializer(BaseSerializerTestCase):
             "created_at": self.reservation.created_at.strftime(
                 "%Y-%m-%dT%H:%M:%S"
             )
-                          + "Z",
+            + "Z",
             "user": self.user.id,
         }
         self.assert_serialized_equal(
