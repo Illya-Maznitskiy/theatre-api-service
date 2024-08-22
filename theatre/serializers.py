@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from theatre.models import (
     TheatreHall,
@@ -10,6 +10,9 @@ from theatre.models import (
     Reservation,
     Ticket,
 )
+
+
+User = get_user_model()
 
 
 class TheatreHallSerializer(serializers.ModelSerializer):
@@ -49,17 +52,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-
-    class Meta:
-        model = Reservation
-        fields = ("id", "created_at", "user")
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation["created_at"] = instance.created_at.strftime(
-            "%Y-%m-%dT%H:%M:%S") + "Z"
-        return representation
+    user = serializers.PrimaryKeyRelatedField(
+        queryset=get_user_model().objects.all()
+    )
 
 
 class TicketSerializer(serializers.ModelSerializer):
