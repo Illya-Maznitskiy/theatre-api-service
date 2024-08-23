@@ -26,8 +26,10 @@ class Performance(models.Model):
     show_time = models.DateTimeField()
 
     def __str__(self):
-        return (f"{self.play.title} at {self.theatre_hall.name} "
-                f"on {self.show_time.strftime('%Y-%m-%d %H:%M')}")
+        return (
+            f"{self.play.title} at {self.theatre_hall.name} "
+            f"on {self.show_time.strftime('%Y-%m-%d %H:%M')}"
+        )
 
 
 class Actor(models.Model):
@@ -47,12 +49,16 @@ class Genre(models.Model):
 
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
     def __str__(self):
-        return (f"Reservation: {self.id} "
-                f"on {self.created_at.strftime('%Y-%m-%d %H:%M')} "
-                f"by {self.user.username}")
+        return (
+            f"Reservation: {self.id} "
+            f"on {self.created_at.strftime('%Y-%m-%d %H:%M')} "
+            f"by {self.user.email}"
+        )
 
 
 class Ticket(models.Model):
@@ -62,6 +68,8 @@ class Ticket(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
 
     def __str__(self):
-        return (f"Ticket {self.row}-{self.seat} for "
-                f"{self.performance.play.title} on "
-                f"{self.performance.show_time.strftime('%Y-%m-%d %H:%M')}")
+        return (
+            f"Ticket {self.row}-{self.seat} for "
+            f"{self.performance.play.title} on "
+            f"{self.performance.show_time.strftime('%Y-%m-%d %H:%M')}"
+        )

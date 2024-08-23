@@ -20,43 +20,40 @@ from theatre.serializers import (
 )
 
 
-class TheatreHallViewSet(viewsets.ModelViewSet):
+class BaseViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class TheatreHallViewSet(BaseViewSet):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
-class PlayViewSet(viewsets.ModelViewSet):
+class PlayViewSet(BaseViewSet):
     queryset = Play.objects.all()
     serializer_class = PlaySerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
-class PerformanceViewSet(viewsets.ModelViewSet):
+class PerformanceViewSet(BaseViewSet):
     queryset = Performance.objects.all()
     serializer_class = PerformanceSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
-class ActorViewSet(viewsets.ModelViewSet):
+class ActorViewSet(BaseViewSet):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(BaseViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
-class ReservationViewSet(viewsets.ModelViewSet):
+class ReservationViewSet(BaseViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
-class TicketViewSet(viewsets.ModelViewSet):
+class TicketViewSet(BaseViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    permission_classes = [permissions.IsAuthenticated]
