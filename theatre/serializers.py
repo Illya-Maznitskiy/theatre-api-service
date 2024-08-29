@@ -56,6 +56,10 @@ class ReservationSerializer(serializers.ModelSerializer):
         queryset=get_user_model().objects.all()
     )
 
+    class Meta:
+        model = Reservation
+        fields = ("id", "created_at", "user")
+
 
 class TicketSerializer(serializers.ModelSerializer):
     performance = serializers.PrimaryKeyRelatedField(
