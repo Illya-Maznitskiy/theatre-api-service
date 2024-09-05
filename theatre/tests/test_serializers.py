@@ -1,5 +1,5 @@
 from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from theatre.models import (
     TheatreHall,
@@ -19,6 +19,9 @@ from theatre.serializers import (
     ReservationSerializer,
     TicketSerializer,
 )
+
+
+User = get_user_model()
 
 
 class BaseSerializerTestCase(APITestCase):

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
@@ -13,6 +13,9 @@ from theatre.models import (
 )
 
 
+user = get_user_model()
+
+
 class TestTheatreModels(TestCase):
     def setUp(self):
         self.play = Play.objects.create(
@@ -23,7 +26,7 @@ class TestTheatreModels(TestCase):
             name="Main Hall", rows=10, seats_in_row=20
         )
         self.show_time = timezone.now() + timezone.timedelta(days=1)
-        self.user = User.objects.create_user(
+        self.user = user.objects.create_user(
             username="testuser",
             password="password",
         )

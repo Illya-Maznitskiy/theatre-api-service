@@ -1,7 +1,10 @@
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APIClient
+
 from theatre.models import (
     TheatreHall,
     Play,
@@ -13,15 +16,18 @@ from theatre.models import (
 )
 
 
+User = get_user_model()
+
+
 class UrlsTest(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.client = APIClient()
         self.user = User.objects.create_user(
             username="testuser", password="testpassword"
         )
-        self.client.login(username="testuser", password="testpassword")
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
-        # Create test data
         self.theatre_hall = TheatreHall.objects.create(
             name="Hall 1", rows=10, seats_in_row=20
         )
@@ -46,37 +52,37 @@ class UrlsTest(TestCase):
         )
 
     def test_theatre_hall_url(self):
-        response = self.client.get(reverse("theatre:theatre_hall-list"))
+        response = self.client.get(reverse("theatre:theatre_halls-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_play_url(self):
-        response = self.client.get(reverse("theatre:play-list"))
+        response = self.client.get(reverse("theatre:plays-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_performance_url(self):
-        response = self.client.get(reverse("theatre:performance-list"))
+        response = self.client.get(reverse("theatre:performances-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_actor_url(self):
-        response = self.client.get(reverse("theatre:actor-list"))
+        response = self.client.get(reverse("theatre:actors-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_genre_url(self):
-        response = self.client.get(reverse("theatre:genre-list"))
+        response = self.client.get(reverse("theatre:genres-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_reservation_url(self):
-        response = self.client.get(reverse("theatre:reservation-list"))
+        response = self.client.get(reverse("theatre:reservations-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_ticket_url(self):
-        response = self.client.get(reverse("theatre:ticket-list"))
+        response = self.client.get(reverse("theatre:tickets-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_theatre_hall_detail_url(self):
         response = self.client.get(
             reverse(
-                "theatre:theatre_hall-detail",
+                "theatre:theatre_halls-detail",
                 kwargs={"pk": self.theatre_hall.pk},
             )
         )
@@ -84,14 +90,14 @@ class UrlsTest(TestCase):
 
     def test_play_detail_url(self):
         response = self.client.get(
-            reverse("theatre:play-detail", kwargs={"pk": self.play.pk})
+            reverse("theatre:plays-detail", kwargs={"pk": self.play.pk})
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_performance_detail_url(self):
         response = self.client.get(
             reverse(
-                "theatre:performance-detail",
+                "theatre:performances-detail",
                 kwargs={"pk": self.performance.pk},
             )
         )
@@ -99,20 +105,20 @@ class UrlsTest(TestCase):
 
     def test_actor_detail_url(self):
         response = self.client.get(
-            reverse("theatre:actor-detail", kwargs={"pk": self.actor.pk})
+            reverse("theatre:actors-detail", kwargs={"pk": self.actor.pk})
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_genre_detail_url(self):
         response = self.client.get(
-            reverse("theatre:genre-detail", kwargs={"pk": self.genre.pk})
+            reverse("theatre:genres-detail", kwargs={"pk": self.genre.pk})
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_reservation_detail_url(self):
         response = self.client.get(
             reverse(
-                "theatre:reservation-detail",
+                "theatre:reservations-detail",
                 kwargs={"pk": self.reservation.pk},
             )
         )
@@ -120,6 +126,6 @@ class UrlsTest(TestCase):
 
     def test_ticket_detail_url(self):
         response = self.client.get(
-            reverse("theatre:ticket-detail", kwargs={"pk": self.ticket.pk})
+            reverse("theatre:tickets-detail", kwargs={"pk": self.ticket.pk})
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
