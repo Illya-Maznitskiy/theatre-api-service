@@ -55,6 +55,17 @@ class ReservationSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
         queryset=get_user_model().objects.all()
     )
+    created_at = serializers.DateTimeField(
+        format="%Y-%m-%dT%H:%M:%S%z", read_only=True
+    )
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        created_at = instance.created_at
+        representation["created_at"] = (
+            created_at.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+        )
+        return representation
 
     class Meta:
         model = Reservation

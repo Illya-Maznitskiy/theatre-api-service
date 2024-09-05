@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class TheatreHall(models.Model):
@@ -57,7 +56,7 @@ class Reservation(models.Model):
         return (
             f"Reservation: {self.id} "
             f"on {self.created_at.strftime('%Y-%m-%d %H:%M')} "
-            f"by {self.user.email}"
+            f"by {self.user.username}"
         )
 
 
