@@ -10,6 +10,7 @@ This API is designed for a local theater, allowing visitors to make online reser
 - Django ORM
 - Django
 - DRF
+- Docker
 
 
 ## Setup
@@ -23,6 +24,43 @@ source venv/bin/activate (on macOS)
 pip install -r requirements.txt
 python manage.py runserver
 ```
+
+
+## Docker Setup
+To set up and run the project using [Docker](https://www.docker.com/get-started/), follow these steps:
+
+- Use `http://localhost:8001/` URL to visit the service when it starts.
+
+1. **Ensure Docker is Running**:
+    ```text
+    Make sure Docker Desktop is installed and running on your system.
+    ```
+
+2. **Build the Docker Images**:
+    ```bash
+    docker-compose build
+    ```
+
+3. **Start the Services**:
+    ```bash
+    docker-compose up
+    ```
+
+4. **Stop the Services**:
+    ```bash
+    docker-compose down
+    ```
+
+
+## Docker Configuration
+### _Dockerfile_
+Configures the Django app environment, installs dependencies, sets the working directory, and manages media file permissions
+
+### _docker-compose.yml_
+This file sets up the Docker services, including the Django application and PostgreSQL database:
+
+### _Environment Variables .env_
+These variables configure the PostgreSQL database connection.
 
 
 ## API Endpoints
