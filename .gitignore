@@ -389,3 +389,19 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django,venv,pycharm
+
+# Ignore Docker internal files and caches
+.docker/
+docker-compose.override.yml
+docker-compose.yml
+Dockerfile
+**/build
+**/dist
+**/tmp
+**/cache
+**/.dockerignore
+**/docker-compose.override.yml
+# Ignore Docker build files
+[internal]/
+CACHED/
+exporting/
