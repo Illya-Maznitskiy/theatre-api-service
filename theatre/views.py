@@ -20,8 +20,22 @@ from theatre.serializers import (
 )
 
 
+class StaffRequiredPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_staff
+
+
+class IsAuthenticatedOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_authenticated
+
+
 class BaseViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [StaffRequiredPermission]
 
 
 class TheatreHallViewSet(BaseViewSet):
@@ -52,8 +66,10 @@ class GenreViewSet(BaseViewSet):
 class ReservationViewSet(BaseViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class TicketViewSet(BaseViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
