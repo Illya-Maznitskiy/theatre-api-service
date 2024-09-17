@@ -2,6 +2,7 @@ services:
   theatre:
     build:
       context: .
+    image: theatre-api-service
     env_file:
       - .env
     environment:
