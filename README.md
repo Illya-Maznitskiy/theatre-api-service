@@ -22,7 +22,34 @@ python -m venv venv
 venv\Scripts\activate (on Windows)
 source venv/bin/activate (on macOS)
 pip install -r requirements.txt
-python manage.py runserver
+```
+
+
+## Commands to test the project:
+You can run the tests and check code style using `flake8` with the following commands:
+
+```
+python manage.py test
+flake8
+```
+
+
+## Docker Configuration
+### _Dockerfile_
+Configures the Django app environment, installs dependencies, sets the working directory, and manages media file permissions
+
+### _docker-compose.yml_
+This file sets up the Docker services, including the Django application and PostgreSQL database:
+
+### _Environment Variables (.env)_
+These variables configure the PostgreSQL database connection. Create a `.env` file in the root directory of the project and add the necessary database configuration. Example content:
+```env
+DB_NAME=your_database_name
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
+DB_HOST=db
+DB_PORT=5432
+PGDATA=/var/lib/postgresql/data
 ```
 
 
@@ -52,15 +79,15 @@ To set up and run the project using [Docker](https://www.docker.com/get-started/
     ```
 
 
-## Docker Configuration
-### _Dockerfile_
-Configures the Django app environment, installs dependencies, sets the working directory, and manages media file permissions
+## Access
+- **Superusers**: Can modify all data (e.g., add, update, delete entries) in the Theatre API.
+- **Authenticated Users**: Can view data and create reservations and tickets but cannot modify existing data.
+To create a superuser, use the following command:
 
-### _docker-compose.yml_
-This file sets up the Docker services, including the Django application and PostgreSQL database:
-
-### _Environment Variables .env_
-These variables configure the PostgreSQL database connection.
+```bash
+python manage.py createsuperuser
+```
+After creating the superuser, you can log in using these credentials on the /api/user/login/ page to get your authentication token. This token can be used for authorized access to the Theatre API.
 
 
 ## API Endpoints
@@ -78,14 +105,6 @@ These variables configure the PostgreSQL database connection.
 - **URL:** `/api/theatre/genres/`
 - **URL:** `/api/theatre/reservations/`
 - **URL:** `/api/theatre/tickets/`
-
-
-## Commands to test the project:
-You can use the following commands to run written tests and check the code style using flake8:
-```
-python manage.py test
-flake8
-```
 
 
 ## Screenshots:
