@@ -56,7 +56,7 @@ PGDATA=/var/lib/postgresql/data
 ## Docker Setup
 To set up and run the project using [Docker](https://www.docker.com/get-started/), follow these steps:
 
-- Use `http://localhost:8001/` URL to visit the service when it starts.
+- Use [http://localhost:8001/](http://localhost:8001/) URL to visit the service when it starts.
 
 1. **Ensure Docker is Running**:
     ```text
