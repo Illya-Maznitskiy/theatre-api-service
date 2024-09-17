@@ -13,6 +13,12 @@ This API is designed for a local theater, allowing visitors to make online reser
 - Docker
 
 
+## API Features
+- **CRUD Operations**: Create, Read, Update, and Delete data.
+- **Authentication & Authorization**: Secure endpoints with methods like Token Authentication.
+- **Testing**: Ensure API reliability with tests for apps.
+
+
 ## Setup
 To install the project locally on your computer, execute the following commands in a terminal:
 ```bash
