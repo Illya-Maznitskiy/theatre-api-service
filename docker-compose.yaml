@@ -4,6 +4,8 @@ services:
       context: .
     env_file:
       - .env
+    environment:
+      - DOCKER_ENV=true
     ports:
       - "8001:8001"
     volumes:
