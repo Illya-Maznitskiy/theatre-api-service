@@ -1,5 +1,5 @@
 from rest_framework.authtoken.models import Token
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APITestCase
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -20,20 +20,18 @@ from theatre.models import (
 User = get_user_model()
 
 
-class PublicTheatreHallTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
+class PublicTheatreHallTest(APITestCase):
 
     def test_authentication_required(self):
-        response = self.client.get(reverse("theatre:theatre_halls-list"))
+        response = self.client.post(reverse("theatre:theatre_halls-list"))
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateTheatreHallTest(TestCase):
+class PrivateTheatreHallTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             username="testuser", password="testpassword"
         )
         self.token = Token.objects.create(user=self.user)
@@ -74,30 +72,29 @@ class PrivateTheatreHallTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class PublicPlayTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
+class PublicPlayTest(APITestCase):
 
     def test_authentication_required(self):
-        response = self.client.get(reverse("theatre:plays-list"))
+        response = self.client.post("/api/theatre/theatre-halls/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivatePlayTest(TestCase):
+class PrivatePlayTest(APITestCase):
+
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             username="testuser", password="testpassword"
         )
         self.token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
-        self.plays_list_url = reverse("theatre:plays-list")
-        self.plays_detail_url = reverse(
-            "theatre:plays-detail", kwargs={"pk": 1}
-        )
         self.play = Play.objects.create(
             title="Hamlet", description="A tragedy by William Shakespeare"
+        )
+        self.plays_list_url = reverse("theatre:plays-list")
+        self.plays_detail_url = reverse(
+            "theatre:plays-detail", kwargs={"pk": self.play.pk}
         )
 
     def test_retrieve_play_detail(self):
@@ -118,9 +115,7 @@ class PrivatePlayTest(TestCase):
             "description": "Updated description",
         }
         response = self.client.put(
-            self.plays_detail_url,
-            data=data,
-            format="json",
+            self.plays_detail_url, data=data, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -129,19 +124,17 @@ class PrivatePlayTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class PublicPerformanceTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
+class PublicPerformanceTest(APITestCase):
 
     def test_authentication_required(self):
-        response = self.client.get(reverse("theatre:performances-list"))
+        response = self.client.post(reverse("theatre:performances-list"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivatePerformanceTest(TestCase):
+class PrivatePerformanceTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             username="testuser", password="testpassword"
         )
         self.token = Token.objects.create(user=self.user)
@@ -197,30 +190,28 @@ class PrivatePerformanceTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class PublicActorTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-
+class PublicActorTest(APITestCase):
     def test_authentication_required(self):
-        response = self.client.get(reverse("theatre:actors-list"))
+        response = self.client.post(reverse("theatre:actors-list"))
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateActorTest(TestCase):
+class PrivateActorTest(APITestCase):
+
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             username="testuser", password="testpassword"
         )
         self.token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
+        self.actor = Actor.objects.create(first_name="John", last_name="Doe")
         self.actors_list_url = reverse("theatre:actors-list")
         self.actors_detail_url = reverse(
-            "theatre:actors-detail", kwargs={"pk": 1}
+            "theatre:actors-detail", kwargs={"pk": self.actor.pk}
         )
-        self.actor = Actor.objects.create(first_name="John", last_name="Doe")
 
     def test_retrieve_actor_list(self):
         response = self.client.get(self.actors_list_url)
@@ -233,11 +224,7 @@ class PrivateActorTest(TestCase):
 
     def test_update_actor_detail(self):
         data = {"first_name": "Johnny", "last_name": "Doe"}
-        response = self.client.put(
-            self.actors_detail_url,
-            data,
-            format="json",
-        )
+        response = self.client.put(self.actors_detail_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_actor_detail(self):
@@ -245,29 +232,26 @@ class PrivateActorTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class PublicGenreTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-
+class PublicGenreTest(APITestCase):
     def test_authentication_required(self):
-        response = self.client.get(reverse("theatre:genres-list"))
+        response = self.client.post(reverse("theatre:genres-list"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateGenreTest(TestCase):
+class PrivateGenreTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             username="testuser", password="testpassword"
         )
         self.token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
+        self.genre = Genre.objects.create(name="Drama")
         self.genres_list_url = reverse("theatre:genres-list")
         self.genres_detail_url = reverse(
-            "theatre:genres-detail", kwargs={"pk": 1}
+            "theatre:genres-detail", kwargs={"pk": self.genre.pk}
         )
-        self.genre = Genre.objects.create(name="Drama")
 
     def test_retrieve_genre_list(self):
         response = self.client.get(self.genres_list_url)
@@ -288,19 +272,16 @@ class PrivateGenreTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class PublicReservationTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-
+class PublicReservationTest(APITestCase):
     def test_authentication_required(self):
-        response = self.client.get(reverse("theatre:reservations-list"))
+        response = self.client.post(reverse("theatre:reservations-list"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateReservationTest(TestCase):
+class PrivateReservationTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             username="testuser", password="testpassword"
         )
         self.token = Token.objects.create(user=self.user)
@@ -317,11 +298,12 @@ class PrivateReservationTest(TestCase):
             theatre_hall=self.theatre_hall,
             show_time=timezone.now(),
         )
+        self.reservation = Reservation.objects.create(user=self.user)
         self.reservations_list_url = reverse("theatre:reservations-list")
         self.reservations_detail_url = reverse(
-            "theatre:reservations-detail", kwargs={"pk": 1}
+            "theatre:reservations-detail",
+            kwargs={"pk": self.reservation.pk},  # Use self.reservation.pk here
         )
-        self.reservation = Reservation.objects.create(user=self.user)
 
     def test_retrieve_reservation_list(self):
         response = self.client.get(self.reservations_list_url)
@@ -346,19 +328,16 @@ class PrivateReservationTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class PublicTicketTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-
+class PublicTicketTest(APITestCase):
     def test_authentication_required(self):
-        response = self.client.get(reverse("theatre:tickets-list"))
+        response = self.client.post(reverse("theatre:tickets-list"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateTicketTest(TestCase):
+class PrivateTicketTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_superuser(
             username="testuser", password="testpassword"
         )
         self.token = Token.objects.create(user=self.user)
@@ -376,15 +355,16 @@ class PrivateTicketTest(TestCase):
             show_time=timezone.now(),
         )
         self.reservation = Reservation.objects.create(user=self.user)
-        self.tickets_list_url = reverse("theatre:tickets-list")
-        self.tickets_detail_url = reverse(
-            "theatre:tickets-detail", kwargs={"pk": 1}
-        )
         self.ticket = Ticket.objects.create(
             row=1,
             seat=1,
             performance=self.performance,
             reservation=self.reservation,
+        )
+        self.tickets_list_url = reverse("theatre:tickets-list")
+        self.tickets_detail_url = reverse(
+            "theatre:tickets-detail",
+            kwargs={"pk": self.ticket.pk},  # Use self.ticket.pk here
         )
 
     def test_retrieve_ticket_detail(self):
