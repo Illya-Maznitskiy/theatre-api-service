@@ -40,6 +40,11 @@ flake8
 ```
 
 
+## Configuration .env
+1. Create a .env file in the root directory of the project and add the necessary configuration by the [sample.env](sample.env) file.
+2. Make sure to replace 'your_dummy_secret_key_here' with a real secret key. You can create it with [Djecrety](https://djecrety.ir/)
+
+
 ## Docker Configuration
 ### _Dockerfile_
 Configures the Django app environment, installs dependencies, sets the working directory, and manages media file permissions
