@@ -20,8 +20,16 @@ class Play(models.Model):
 
 
 class Performance(models.Model):
-    play = models.ForeignKey(Play, on_delete=models.CASCADE)
-    theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.CASCADE)
+    play = models.ForeignKey(
+        Play,
+        on_delete=models.CASCADE,
+        related_name="performances"
+    )
+    theatre_hall = models.ForeignKey(
+        TheatreHall,
+        on_delete=models.CASCADE,
+        related_name="theatre_hall_performances"
+    )
     show_time = models.DateTimeField()
 
     def __str__(self):
@@ -65,8 +73,16 @@ class Reservation(models.Model):
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    performance = models.ForeignKey(Performance, on_delete=models.CASCADE)
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    performance = models.ForeignKey(
+        Performance,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    reservation = models.ForeignKey(
+        Reservation,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
 
     def __str__(self):
         return (
