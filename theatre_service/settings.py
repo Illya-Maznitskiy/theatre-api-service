@@ -15,6 +15,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
+load_dotenv()
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -96,7 +99,6 @@ WSGI_APPLICATION = "theatre_service.wsgi.application"
 # Override settings if in Docker environment
 POSTGRES_HOST = "localhost"
 
-load_dotenv()
 
 if os.getenv("DOCKER_ENV") == "true":
     POSTGRES_HOST = "db"
@@ -107,7 +109,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB", "theatre"),
         "USER": os.getenv("POSTGRES_USER", "theatre"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", "theatre"),
-        "HOST": POSTGRES_HOST,
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
         "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
